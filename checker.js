@@ -1,9 +1,10 @@
 async function checkSite(url) {
     return new Promise(resolve => {
         const frame = document.getElementById("testFrame");
-        frame.src = url;
+        let loaded = false;
 
         frame.onload = () => {
+            loaded = true;
             try {
                 const title = frame.contentDocument.title || "";
                 if (title.includes("iBoss") || title.includes("Blocked")) {
@@ -17,21 +18,11 @@ async function checkSite(url) {
         };
 
         frame.onerror = () => resolve("Blocked");
+
+        setTimeout(() => {
+            if (!loaded) resolve("Blocked");
+        }, 2000);
+
+        frame.src = url;
     });
-}
-
-async function startCheck() {
-    const urls = document.getElementById("urlList").value.split("\n");
-    const table = document.getElementById("results");
-
-    for (let url of urls) {
-        url = url.trim();
-        if (!url) continue;
-
-        const status = await checkSite(url);
-
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${url}</td><td>${status}</td>`;
-        table.appendChild(row);
-    }
 }
