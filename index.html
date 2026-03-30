@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>iBoss Block Checker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>iBoss Block Checker</h2>
+<p>Paste URLs below (one per line):</p>
+
+<textarea id="urlList"></textarea>
+<br><br>
+<button onclick="startCheck()">Check Sites</button>
+
+<table id="results">
+    <tr><th>URL</th><th>Status</th></tr>
+</table>
+
+<iframe id="testFrame" style="display:none;"></iframe>
+
+<script src="checker.js"></script>
+</body>
+</html>
