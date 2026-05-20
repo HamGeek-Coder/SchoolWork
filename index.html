@@ -1,24 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>iBoss Block Checker</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Website Redirect Checker</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f4f4f9; }
+        ul { list-style-type: none; padding: 0; }
+        li { padding: 10px; margin: 5px 0; background: white; border-left: 5px solid #ccc; }
+        .match { border-left-color: #ff4d4d; color: #d93838; font-weight: bold; }
+        .safe { border-left-color: #2ecc71; color: #27ae60; }
+    </style>
 </head>
 <body>
 
-<h2>iBoss Block Checker</h2>
-<p>Paste URLs below (one per line):</p>
+    <h2>Website Status Checker</h2>
+    <button onclick="checkWebsites()">Check Sites</button>
+    <ul id="results"></ul>
 
-<textarea id="urlList"></textarea>
-<br><br>
-<button onclick="startCheck()">Check Sites</button>
+    <script>
+        // 1. Put the websites you want to check here
+        const websites = [
+            "https://httpbin.org/redirect-to?url=https%3A%2F%2Fexample.com%2Fblocked-path", // Simulates a redirect to a blocked path
+            "https://google.com"
+            "education.awiki.org"
+        ];
 
-<table id="results">
-    <tr><th>URL</th><th>Status</th></tr>
-</table>
+        // 2. Specify what the text/URL starts with that triggers an "X"
+        const targetPrefix = "https://7rl70027.ibosscloud.com/;
 
-<iframe id="testFrame" style="display:none;"></iframe>
+        // 3. A free public CORS proxy to bypass browser restrictions
+        const proxyUrl = "https://api.allorigins.win/get?url=";
 
-<script src="checker.js"></script>
+        async function checkWebsites() {
+            const list = document.getElementById("results");
+            list.innerHTML = "Checking sites... please wait...";
+
+            let htmlContent = "";
+
+            for (let url of websites) {
+                try {
+                    // Fetch through the proxy
+                    const response = await fetch(proxyUrl + encodeURIComponent(url));
+                    const data = await response.json();
+                    
+                    // AllOrigins returns the final destination URL in data.status.url
+                    const finalUrl = data.status.url;
+
+                    if (finalUrl.startsWith(targetPrefix)) {
+                        htmlContent += `<li class="match">❌ ${url} (Redirected to target)</li>`;
+                    } else {
+                        htmlContent += `<li class="safe">✓ ${url}</li>`;
+                    }
+                } catch (error) {
+                    // If the site is completely down or blocked by school Wi-Fi
+                    htmlContent += `<li class="safe">✓ ${url} (Could not load / Safe)</li>`;
+                }
+            }
+
+            list.innerHTML = htmlContent;
+        }
+    </script>
 </body>
 </html>
